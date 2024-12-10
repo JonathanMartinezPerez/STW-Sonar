@@ -57,3 +57,23 @@ jobs:
         run: |
           cd MyInventoryHub
           xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" npm test
+        
+      # Análisis de calidad con SonarCloud    
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=JonathanMartinezPerez_STW-Sonar
+            -Dsonar.organization=jonathanmartinezperez
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/*.spec.ts
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      
+      # CodeCov.io
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
