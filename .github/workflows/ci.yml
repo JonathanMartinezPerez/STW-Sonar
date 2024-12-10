@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
+ 
       # Paso 3: Instalar dependencias del sistema y xvfb
       - name: Install system dependencies and xvfb
         run: |
