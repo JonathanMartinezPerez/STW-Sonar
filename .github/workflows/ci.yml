@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI with SonarCloud
 
 on:
   push:
@@ -9,56 +9,33 @@ on:
       - main
 
 jobs:
-  build-and-test:
+  build-and-analyze:
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Clonar el repositorio
+      # Clonar el repositorio
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Paso 2: Configurar Node.js
+      # Configurar Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # Paso 3: Instalar dependencias del sistema y xvfb
-      - name: Install system dependencies and xvfb
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            google-chrome-stable \
-            xvfb \
-            libnss3 \
-            libgconf-2-4 \
-            libxi6 \
-            libxkbcommon-x11-0 \
-            libxcomposite1 \
-            libxcursor1 \
-            libxdamage1 \
-            libxrandr2 \
-            libxss1 \
-            libxtst6 \
-            libatk1.0-0 \
-            libatk-bridge2.0-0 \
-            libcups2 \
-            libgbm1 \
-            libasound2
-
-      # Paso 4: Instalar dependencias del proyecto
+      # Instalar dependencias
       - name: Install dependencies
         run: |
           cd MyInventoryHub
           npm install
 
-      # Paso 5: Ejecutar los tests con xvfb
-      - name: Run tests with xvfb
+      # Ejecutar los tests y generar el informe de cobertura
+      - name: Run tests with coverage
         run: |
           cd MyInventoryHub
-          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" npm test
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" ng test --watch=false --code-coverage
 
-      # Paso 6: Análisis de calidad con SonarCloud
+      # Análisis de calidad con SonarCloud
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2
         env:
@@ -67,16 +44,7 @@ jobs:
           args: >
             -Dsonar.projectKey=JonathanMartinezPerez_STW-Sonar
             -Dsonar.organization=jonathanmartinezperez
-            -Dsonar.projectBaseDir=MyInventoryHub
-            -Dsonar.sources=src
-            -Dsonar.tests=src
+            -Dsonar.sources=MyInventoryHub/src
+            -Dsonar.tests=MyInventoryHub/src
             -Dsonar.test.inclusions=**/*.spec.ts
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-
-      # Paso 7: Subir reportes de cobertura a Codecov
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          files: ./MyInventoryHub/coverage/lcov.info
-          fail_ci_if_error: true
-          verbose: true
+            -Dsonar.javascript.lcov.reportPaths=MyInventoryHub/coverage/my-inventory-hub/lcov.info
