@@ -67,6 +67,7 @@ jobs:
           args: >
             -Dsonar.projectKey=JonathanMartinezPerez_STW-Sonar
             -Dsonar.organization=jonathanmartinezperez
+            -Dsonar.projectBaseDir=MyInventoryHub
             -Dsonar.sources=src
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.spec.ts
