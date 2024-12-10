@@ -1,23 +1,19 @@
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
-    frameworks: ['jasmine', '@angular-devkit/build-angular'],
-    plugins: [
-      require('karma-jasmine'),
-      require('karma-chrome-launcher'),
-      require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma')
-    ],
-    reporters: ['progress', 'coverage'],
-    coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/my-inventory-hub'),
-      subdir: '.',
-      reporters: [
-        { type: 'html' },       // Reporte en formato HTML
-        { type: 'lcovonly' },   // Reporte en formato lcov (lcov.info)
-        { type: 'text-summary' } // Resumen de la cobertura en consola
-      ]
+    browsers: ['ChromeHeadlessCustom'],
+    customLaunchers: {
+      ChromeHeadlessCustom: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--no-sandbox',
+          '--disable-gpu',
+          '--disable-software-rasterizer',
+          '--remote-debugging-port=9222',
+          '--headless'
+        ]
+      }
     },
-    browsers: ['ChromeHeadless'],
-    singleRun: true
+    singleRun: true,
+    reporters: ['progress']
   });
 };
