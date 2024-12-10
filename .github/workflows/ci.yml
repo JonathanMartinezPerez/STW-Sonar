@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
- 
+
       # Paso 3: Instalar dependencias del sistema y xvfb
       - name: Install system dependencies and xvfb
         run: |
@@ -52,13 +52,13 @@ jobs:
           cd MyInventoryHub
           npm install
 
-      # Paso 5: Ejecutar los tests con xvfb-run
+      # Paso 5: Ejecutar los tests con xvfb
       - name: Run tests with xvfb
         run: |
           cd MyInventoryHub
           xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" npm test
-        
-      # Análisis de calidad con SonarCloud    
+
+      # Paso 6: Análisis de calidad con SonarCloud
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2
         env:
@@ -71,8 +71,8 @@ jobs:
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.spec.ts
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-      
-      # CodeCov.io
+
+      # Paso 7: Subir reportes de cobertura a Codecov
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
